@@ -34,28 +34,29 @@ class Graph:
                 self.leaves.append(n)
 
 class Node:
-    def __init__(self, data, position):
+    def __init__(self, data, position, previous):
         self.moves = []
         self.data = data
         self.position = position
+        self.previous = previous
 
     def new_moves(self):
-        if self.position % 3 != 0:
+        if self.position % 3 != 0 and self.previous != 'r':
             left_move = self.data.copy()
             swap(left_move, self.position, self.position - 1)
-            self.moves.append(Node(left_move, self.position - 1))
-        if self.position % 3 != 2:
+            self.moves.append(Node(left_move, self.position - 1, 'l'))
+        if self.position % 3 != 2 and self.previous != 'l':
             right_move = self.data.copy()
             swap(right_move, self.position, self.position + 1)
-            self.moves.append(Node(right_move, self.position + 1))
-        if self.position > 2:
+            self.moves.append(Node(right_move, self.position + 1, 'r'))
+        if self.position > 2 and self.previous != 'd':
             up_move = self.data.copy()
             swap(up_move, self.position, self.position - 3)
-            self.moves.append(Node(up_move, self.position - 3))
-        if self.position < 6:
+            self.moves.append(Node(up_move, self.position - 3, 'u'))
+        if self.position < 6 and self.previous != 'u':
             down_move = self.data.copy()
             swap(down_move, self.position, self.position + 3)
-            self.moves.append(Node(down_move, self.position + 3))
+            self.moves.append(Node(down_move, self.position + 3, 'd'))
 
 
 def solve(size):
@@ -70,7 +71,7 @@ def solve(size):
     print("Puzzle: {}".format(puzzle))
 
     if puzzle != goal:
-        root = Node(puzzle, puzzle.index(0))
+        root = Node(puzzle, puzzle.index(0), '')
         graph = Graph(root)
         solution_found = False
         while not solution_found:
