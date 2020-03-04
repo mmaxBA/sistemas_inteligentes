@@ -7,12 +7,11 @@ def swap (list, position_a, position_b):
 class Graph:
     def __init__(self, root):
         self.root = root
-        self.visited = []
+        self.visited = [root]
         self.queue = []
         self.leaves = [root]
 
     def bfs(self, goal):
-        self.visited.append(self.root)
         self.queue.append(self.root)
         while self.queue:
             s = self.queue.pop(0)
@@ -23,12 +22,13 @@ class Graph:
                 if move not in self.visited:
                     self.visited.append(move)
                     self.queue.append(move)
+        self.queue = []
         return False
 
     def new_level(self):
         count = len(self.leaves)
         for i in range(0, count):
-            node = self.leaves.pop()
+            node = self.leaves.pop(0)
             node.new_moves()
             for n in node.moves:
                 self.leaves.append(n)
@@ -71,7 +71,7 @@ def solve(size):
     print("Puzzle: {}".format(puzzle))
 
     if puzzle != goal:
-        root = Node(puzzle, puzzle.index(0), '')
+        root = Node(puzzle, puzzle.index(0), " ")
         graph = Graph(root)
         solution_found = False
         while not solution_found:
