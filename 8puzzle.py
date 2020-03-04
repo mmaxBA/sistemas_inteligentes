@@ -19,9 +19,9 @@ class Graph:
             if s.data == goal:
                 return True
             for move in s.moves:
+                self.queue.append(move)
                 if move not in self.visited:
                     self.visited.append(move)
-                    self.queue.append(move)
         self.queue = []
         return False
 
@@ -78,8 +78,6 @@ def solve(size):
             graph.new_level()
             solution_found = graph.bfs(goal)
 
-    print(puzzle)
-    print(graph)
 
 if __name__ == '__main__':
     solve(9)
