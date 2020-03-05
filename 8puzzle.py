@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import random
+import math
 
 
 def swap (list, position_a, position_b):
@@ -74,20 +75,54 @@ class Node:
         return self.data
 
 
-def solve(size):
-    goal = [1, 2, 3, 8, 0, 4, 7, 6, 5]
-    puzzle = [1, 3, 4, 8, 0, 5, 7, 2, 6]
+def solve(size, input, goal):
+    puzzle = input
     print("Puzzle: {}".format(puzzle))
+    print("Goal: {}". format(goal))
 
     if puzzle != goal:
         root = Node(puzzle, puzzle.index(0), "", None)
-        graph = Graph(root, int(size**(1/2)))
+        graph = Graph(root, int(size))
         node = None
+        max = math.factorial(size**2)/2
         while node is None:
             graph.new_level()
             node = graph.bfs(goal)
+            if len(graph.visited) > max:
+                print("Puzzle has no solution")
+                return 0
         graph.print_path(node)
         print("# of nodes: {}".format(len(graph.visited)))
+        return len(graph.visited)
+    return 0
+
+
+def samples(goal, size):
+    inputs = []
+    for i in range(0, 100):
+        new_puzzle = goal.copy()
+        for j in range(0, random.randrange(1, 30)):
+            move(new_puzzle, random.randrange(4), size, new_puzzle.index(0))
+        inputs.append(new_puzzle)
+    return inputs
+
+
+def move(list, move_number, size, position):
+    if position % size != 0 and move_number == 0:
+        swap(list, position, position - 1)
+    if position % size != size - 1 and move_number == 1:
+        swap(list, position, position + 1)
+    if position > size - 1 and move_number == 2:
+        swap(list, position, position - size)
+    if position < (len(list) - size) and move_number == 3 :
+        swap(list, position, position + size)
+
 
 if __name__ == '__main__':
-    solve(9)
+    goal = [1, 2, 3, 4, 5, 6, 7, 8, 0]
+    inputs = samples(goal, 3)
+    mean = 0
+    for puzzle in inputs:
+        mean += solve(3, puzzle,goal)
+    mean = mean /100
+    print("Mean: {}".format(mean))
